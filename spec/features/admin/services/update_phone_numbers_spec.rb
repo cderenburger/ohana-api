@@ -9,7 +9,7 @@ feature 'Update phones' do
   end
 
   scenario 'when no phones exist' do
-    expect(page).to have_link I18n.t('admin.buttons.add_phone')
+    expect(page).to have_link 'Add a new phone number'
   end
 
   scenario 'by adding a new phone', :js do
@@ -18,9 +18,10 @@ feature 'Update phones' do
       number_type: 'TTY',
       department: 'Director of Development',
       extension: '1234',
-      vanity_number: '123-ABC-DEFG'
+      vanity_number: '123-ABC-DEFG',
+      phone_hours:  'M-F, 8am-5pm'
     )
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
 
     expect(find_field('service_phones_attributes_0_number').value).
       to eq '123-456-7890'
@@ -36,6 +37,9 @@ feature 'Update phones' do
 
     expect(find_field('service_phones_attributes_0_vanity_number').value).
       to eq '123-ABC-DEFG'
+
+    expect(find_field('service_phones_attributes_0_phone_hours').value).
+      to eq 'M-F, 8am-5pm'
 
     delete_phone
     within('.phones') do

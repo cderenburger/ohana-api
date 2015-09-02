@@ -13,7 +13,7 @@ feature 'Update phones' do
         to have_no_xpath('.//input[contains(@name, "[extension]")]')
     end
 
-    expect(page).to_not have_link I18n.t('admin.buttons.delete_phone')
+    expect(page).to_not have_link 'Delete this phone permanently'
   end
 
   scenario 'by adding a new phone', :js do
@@ -22,9 +22,10 @@ feature 'Update phones' do
       number_type: 'TTY',
       department: 'Director of Development',
       extension: '1234',
-      vanity_number: '123-ABC-DEFG'
+      vanity_number: '123-ABC-DEFG',
+      phone_hours: 'M-F, 8am-5pm'
     )
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
     visit '/admin/organizations/parent-agency'
 
     expect(find_field('organization_phones_attributes_0_number').value).
@@ -42,6 +43,9 @@ feature 'Update phones' do
     expect(find_field('organization_phones_attributes_0_vanity_number').value).
       to eq '123-ABC-DEFG'
 
+    expect(find_field('organization_phones_attributes_0_phone_hours').value).
+      to eq 'M-F, 8am-5pm'
+
     delete_phone
     visit '/admin/organizations/parent-agency'
     within('.phones') do
@@ -56,8 +60,8 @@ feature 'Update phones' do
       department: 'Director of Development',
       number_type: 'Voice'
     )
-    click_link I18n.t('admin.buttons.add_phone')
-    click_button I18n.t('admin.buttons.save_changes')
+    click_link 'Add a new phone number'
+    click_button 'Save changes'
 
     within('.phones') do
       total_phones = all(:xpath, './/input[contains(@name, "[number]")]')
@@ -71,12 +75,12 @@ feature 'Update phones' do
       department: 'Director of Development',
       number_type: 'Voice'
     )
-    click_link I18n.t('admin.buttons.add_phone')
+    click_link 'Add a new phone number'
     within('.phones') do
       all_phones = all(:xpath, './/input[contains(@name, "[department]")]')
       fill_in all_phones[-1][:id], with: 'Department'
     end
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
     expect(page).to have_content "number can't be blank for Phone"
   end
 end
@@ -109,7 +113,7 @@ feature 'Update phones' do
 
   scenario 'with an empty number' do
     update_phone(number: '')
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
     expect(page).to have_content "number can't be blank for Phone"
   end
 
@@ -121,13 +125,13 @@ feature 'Update phones' do
 
   scenario 'with an invalid extension' do
     update_phone(number: '703-555-1212', extension: 'x200')
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
     expect(page).to have_content 'extension is not a number'
   end
 
   scenario 'with an empty extension' do
     update_phone(number: '703-555-1212', extension: '')
-    click_button I18n.t('admin.buttons.save_changes')
+    click_button 'Save changes'
     expect(page).to_not have_content 'extension is not a number'
   end
 end

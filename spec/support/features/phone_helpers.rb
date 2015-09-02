@@ -1,7 +1,7 @@
 module Features
   module PhoneHelpers
     def add_phone(options = {})
-      click_link I18n.t('admin.buttons.add_phone')
+      click_link 'Add a new phone number'
       update_phone(options)
     end
 
@@ -17,6 +17,7 @@ module Features
       fill_in department, with: options[:department]
       fill_in extension, with: options[:extension]
       fill_in vanity_number, with: options[:vanity_number]
+      fill_in phone_hours, with: options[:phone_hours]
     end
 
     def number
@@ -39,9 +40,13 @@ module Features
       find(:xpath, './/select[contains(@name, "[number_type]")]')[:id]
     end
 
+    def phone_hours
+      find(:xpath, './/input[contains(@name, "[phone_hours]")]')[:id]
+    end
+
     def delete_phone
-      click_link I18n.t('admin.buttons.delete_phone')
-      click_button I18n.t('admin.buttons.save_changes')
+      click_link 'Delete this phone permanently'
+      click_button 'Save changes'
     end
   end
 end
